@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 # In this module the classes that are used to store the torrents and songs are defined
 
+def load_storage():
+    pass
+
 
 class TorrentStorage(object):
 
@@ -23,17 +26,7 @@ class Torrent(object):
 
 class Track(object):
 
-    def __init__(self, torrent, nr, **metadata):
+    def __init__(self, torrent, nr, name):
         self.torrent = torrent.uuid
         self.nr = nr
-        self.metadata = metadata
-
-
-def read_torrent(torrent_location):
-    """
-    Runs peerflix to extract all files that are located in the given torrent.
-
-    returns: A tuple with lenght 2, the first element is a torrent object,
-             the second is a list with all tracks inside the torrent.
-    """
-    pass
+        self.name = name
