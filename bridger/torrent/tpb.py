@@ -2,7 +2,6 @@
 
 from bs4 import BeautifulSoup as bs
 import requests
-from api import SearchResult
 
 factor_table = {
     'KiB': 1024,
@@ -14,6 +13,8 @@ factor_table = {
 def search_page(term, page):
     bs_doc = bs(requests.get("http://thepiratebay.se/search/" + term + "/" + str(page) + "/7/101/").text)
     trs = bs_doc.select('table#searchResult tr')
+
+    source = "thepiratebay.se"
 
 
     for tr in trs:
@@ -31,18 +32,18 @@ def search_page(term, page):
         factor = factor_table[size_str[-3:]]
         size = int(float(size_str[:-3])*factor)
 
-        yield SearchResult(location=magnet_link, name=torrent_name, seeders=seeders, leechers=leechers, size=size)
+        yield dict(location=magnet_link, name=torrent_name, seeders=seeders, leechers=leechers, size=size, source=source)
 
 def search(term):
     page = 0
-    results = []
-    while 1:
-        torrents = list(search_page(term, page))
-        page+=1
-        if len(results) > 0:
-            if results[0].location == torrents[0].location:
-                break
-        results += torrents
-    return results
+    first_result = None
 
-print(len(search('Nickelback')))
+    while 1:
+        for result in search_page(term, page):
+            if first_result:
+                if first_result['location'] == result['location']:
+                    return
+            else:
+                first_result = result
+            yield result
+        page += 1
