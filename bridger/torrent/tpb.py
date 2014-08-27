@@ -1,6 +1,7 @@
 # This is the api for thepiratebay.se
 
 from bs4 import BeautifulSoup as bs
+from bridger.settings import get_proxy_for
 import requests
 
 factor_table = {
@@ -11,7 +12,8 @@ factor_table = {
 }
 
 def search_page(term, page):
-    bs_doc = bs(requests.get("http://thepiratebay.se/search/" + term + "/" + str(page) + "/7/101/").text)
+    root_url = "http://thepiratebay.se/search/{}/{}/7/101/".format(term, page)
+    bs_doc = bs(requests.get(root_url, proxies=get_proxy_for('tpb')).text)
     trs = bs_doc.select('table#searchResult tr')
 
     source = "thepiratebay.se"

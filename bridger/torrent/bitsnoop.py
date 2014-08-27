@@ -1,6 +1,7 @@
 # This is the api - module for bitsnoop
 
 from bs4 import BeautifulSoup as bs
+from bridger.settings import get_proxy_for
 import requests
 
 user_agent = {'User-Agent': "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.143 Safari/537.36"}
@@ -13,7 +14,9 @@ proy_dict = {
 
 def search_page(term, page):
     root_url = "http://bitsnoop.com/search/audio/{term}/c/d/{page}/?fmt=rss"
-    bs_doc = bs(requests.get(root_url.format(term=term, page=page), headers=user_agent, timeout=10, proxies=proy_dict).text)
+    bs_doc = bs(requests.get(root_url.format(term=term, page=page),
+                headers=user_agent, timeout=10, proxies=get_proxy_for('bitsnoop')
+                ).text)
 
     items = bs_doc.select('item')
     source = "bitsnoop.com"

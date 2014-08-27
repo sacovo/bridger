@@ -13,7 +13,6 @@ def run_peerflix(args, use_call=False):
     else:
         return check_output(['node', peerflix_bin] + args)
 
-
 def get_track_dict(torrent_url):
     output = run_peerflix([torrent_url, '-l']).decode()
     lines = output.split('\n')
@@ -26,9 +25,14 @@ def open_stream(torrent_url, nr):
     return output
 
 search_engines = dict()
-apis = config['DEFAULT']['used_apis'].split(" ")
-for api in apis:
-    search_engines[api] = importlib.import_module(api).search
+
+def load_engines():
+    if search_engines:
+        return
+    apis = config['DEFAULT']['used_apis'].split(" ")
+
+    for api in apis:
+        search_engines[api] = importlib.import_module(api).search
 
 class SearchResult(object):
 
@@ -62,7 +66,9 @@ class SearchResult(object):
     def __repr__(self):
         return self.name
 
+
 def search(term):
+    load_engines()
     results_per_api = int(config['DEFAULT']['results_per_api'])
     for name, search_engine in search_engines.items():
         try:

@@ -1,6 +1,7 @@
 # This is the api for kickass.to
 
 from bs4 import BeautifulSoup as bs
+from bridger.settings import get_proxy_for
 import requests
 
 factor_table = {
@@ -12,7 +13,8 @@ factor_table = {
 
 def search_page(term, page):
     root_url = "http://kickass.to/usearch/{term}%20category%3Amusic/{page}/"
-    bs_doc = bs(requests.get(root_url.format(term=term, page=page)).text)
+    bs_doc = bs(requests.get(root_url.format(term=term, page=page),
+                proxies=get_proxy_for('kickass')).text)
 
     trs = bs_doc.select('table.data tr')[1:]
     source = "kickass.to"
