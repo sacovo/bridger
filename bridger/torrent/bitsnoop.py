@@ -5,9 +5,15 @@ import requests
 
 user_agent = {'User-Agent': "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.143 Safari/537.36"}
 
+http_proxy = "188.241.141.112:3127"
+
+proy_dict = {
+    "http": http_proxy,
+}
+
 def search_page(term, page):
     root_url = "http://bitsnoop.com/search/audio/{term}/c/d/{page}/?fmt=rss"
-    bs_doc = bs(requests.get(root_url.format(term=term, page=page), headers=user_agent, timeout=10).text)
+    bs_doc = bs(requests.get(root_url.format(term=term, page=page), headers=user_agent, timeout=10, proxies=proy_dict).text)
 
     items = bs_doc.select('item')
     source = "bitsnoop.com"
