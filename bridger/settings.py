@@ -1,6 +1,6 @@
 # This module is used to load/store settings
-
 import configparser
+import subprocess
 
 config = configparser.ConfigParser()
 
@@ -35,6 +35,10 @@ def get_proxy_for(pagename):
 
 def load_settings(location):
     config.read(location)
+
+
+def expand_shell_expression(expression):
+    return subprocess.check_output('bash -c "echo {}"'.format(expression), shell=True).strip()
 
 
 def store_settings(location):

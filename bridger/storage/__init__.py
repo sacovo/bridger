@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 # In this module the classes that are used to store the torrents and songs are defined
-from bridger.torrent.peerflix import open_stream
-from bridger.settings import config
+from bridger.torrent.peerflix import open_stream, download_file
+from bridger.settings import config, expand_shell_expression as ese
+import os.path
 
 class TorrentStorage(object):
 
@@ -49,10 +50,18 @@ class Track(object):
         if self.path:
             pass
         else:
-            open_stream(torrent_storage.get_torrent(self.torrent).location, self.nr)
+            open_stream(self.get_torrent(), self.nr)
 
+
+    def get_torrent(self):
+        return torrent_storage.get_torrent(self.torrent).location
     def save(self):
         track_storage.add_track(self)
+
+    def download(self):
+        path = config['DEFAULT']['download_dir']
+        output = download_file(self.get_torrent(), self.nr, ese(path).decode())
+        self.path = os.path.join(path, '...', self.name)
 
     def __str__(self):
         return self.name
