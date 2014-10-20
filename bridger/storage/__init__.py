@@ -40,21 +40,19 @@ class Torrent(object):
 
 class Track(object):
 
-    def __init__(self, torrent, nr, name):
+    def __init__(self, torrent, nr, path):
         self.torrent = torrent.uuid
         self.nr = nr
-        self.name = name
-        self.path = ''
+        self.path = path
+        self.name = path.split("/")[-1]
 
     def play(self):
-        if self.path:
-            pass
-        else:
-            open_stream(self.get_torrent(), self.nr)
+        open_stream(self.get_torrent(), self.nr)
 
 
     def get_torrent(self):
         return torrent_storage.get_torrent(self.torrent).location
+
     def save(self):
         track_storage.add_track(self)
 

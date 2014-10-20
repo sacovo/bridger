@@ -13,5 +13,8 @@ for i in search('Queen'):
 nr = int(input('Input a number:\n'))
 print(l[nr].location)
 l[nr].save_torrent()
-
+track = track_storage.tracks[10]
+track.play()
+for track in track_storage.tracks:
+    print(track)
 
